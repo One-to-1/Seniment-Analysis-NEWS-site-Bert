@@ -1,2 +1,2 @@
-# Seniment-Analysis-NEWS-site-Bert
+# Seniment-Analysis-NEWS-site-finBert
  
