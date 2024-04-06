@@ -240,7 +240,7 @@ Output = pd.concat([Output, scoresdf], axis=1)
 
 This block of code creates a DataFrame that contains the original sentences, their predicted sentiments, and the probabilities of each sentiment. `pd.concat()` concatenates the two DataFrames along the columns (`axis=1`).
 
-1. Printing the output DataFrame:
+## Printing the output DataFrame:
 
 ```python
 print(Output)
