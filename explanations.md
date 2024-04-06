@@ -149,7 +149,7 @@ df = pd.DataFrame(sentences, columns=['sentence'])
 
 `pd.DataFrame()` is a function that creates a DataFrame from a list. The `columns` argument specifies the column labels.
 
-## Importing more libraries
+## Importing more libraries for sentiment analysis
 
 ```python
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
@@ -240,7 +240,7 @@ Output = pd.concat([Output, scoresdf], axis=1)
 
 This block of code creates a DataFrame that contains the original sentences, their predicted sentiments, and the probabilities of each sentiment. `pd.concat()` concatenates the two DataFrames along the columns (`axis=1`).
 
-## Printing the output DataFrame:
+## Printing the output DataFrame
 
 ```python
 print(Output)
