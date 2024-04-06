@@ -84,21 +84,44 @@ for article in extractedArticle:
     article_sentences = nltk.sent_tokenize(cleaned_string)
     sentences.append(article_sentences)
 ```
-`next(iter(article))` returns the first item in `article`. `re.sub()` is a function that replaces all occurrences of a pattern in a string. `nltk.sent_tokenize()` is a function that splits a text into sentences. The sentences are then appended to `sentences`.
+`next(iter(article))` returns the first item in `article`. `re.sub()` is a function that replaces all occurrences of a pattern in a string. We are using this because we don't want the period in `Rs.` to be taken as as the ending of a sentence `nltk.sent_tokenize()` is a function that splits a text into sentences. The sentences are then appended to `sentences`.
 
 13. Flattening the list of sentences:
 ```python
 sentences = [sentence for sublist in sentences for sentence in sublist]
 ```
-This line uses a list comprehension to flatten the list of sentences.
+This line uses a list comprehension to flatten the list of sentences. 
+Flattening a list in Python refers to the process of converting a list of lists (or a nested list) into a single, flat list. 
 
-14. Converting the list of sentences into a pandas DataFrame:
+The `sentences` list is a list of lists, where each sublist contains sentences from a single article. The line of code:
+
+```python
+sentences = [sentence for sublist in sentences for sentence in sublist]
+```
+
+is using a list comprehension to "flatten" this list of lists. It iterates over each sublist in `sentences` and then over each `sentence` in that sublist. The result is a new list that contains all the sentences from all the articles, without any nested structure. 
+
+For example, if `sentences` was initially:
+
+```python
+[['sentence 1 from article 1', 'sentence 2 from article 1'], ['sentence 1 from article 2', 'sentence 2 from article 2']]
+```
+
+After flattening, `sentences` would be:
+
+```python
+['sentence 1 from article 1', 'sentence 2 from article 1', 'sentence 1 from article 2', 'sentence 2 from article 2']
+```
+
+This makes it easier to process all the sentences together in the subsequent steps of the code.
+
+14.  Converting the list of sentences into a pandas DataFrame:
 ```python
 df = pd.DataFrame(sentences, columns=['sentence'])
 ```
 `pd.DataFrame()` is a function that creates a DataFrame from a list. The `columns` argument specifies the column labels.
 
-15. Importing more libraries:
+15.  Importing more libraries:
 ```python
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import scipy
@@ -106,7 +129,7 @@ import torch
 ```
 `transformers` is a Python library used for state-of-the-art natural language processing. `scipy` is a Python library used for scientific computing. `torch` is a Python library used for machine learning.
 
-16. Loading the pretrained FinBERT model and tokenizer:
+16.  Loading the pretrained FinBERT model and tokenizer:
 ```python
 X = df['sentence'].to_list()
 tokenizer = AutoTokenizer.from_pretrained("ProsusAI/finbert")
@@ -114,7 +137,7 @@ model = AutoModelForSequenceClassification.from_pretrained("ProsusAI/finbert")
 ```
 `df['sentence'].to_list()` converts the 'sentence' column of the DataFrame to a list. `AutoTokenizer.from_pretrained()` and `AutoModelForSequenceClassification.from_pretrained()` are functions that load the pretrained FinBERT tokenizer and model, respectively.
 
-17. Making sentiment predictions:
+17.  Making sentiment predictions:
 ```python
 preds = []
 preds_proba = []
@@ -139,7 +162,7 @@ for x in X:
 ```
 This block of code tokenizes each sentence, feeds it into the model, computes the softmax of the output logits, and stores the predicted sentiment and its probability. `torch.no_grad()` is a context manager that disables gradient calculation, which is not needed during inference. `tokenizer()` tokenizes the input sentence. `model()` feeds the tokenized input into the model. `scipy.special.softmax()` applies the softmax function to the output logits. `max()` returns the key/value with the highest value.
 
-18. Creating the output DataFrame:
+18.  Creating the output DataFrame:
 ```python
 Output = pd.DataFrame({
     'X': X,
@@ -151,7 +174,7 @@ Output = pd.concat([Output, scoresdf], axis=1)
 ```
 This block of code creates a DataFrame that contains the original sentences, their predicted sentiments, and the probabilities of each sentiment. `pd.concat()` concatenates the two DataFrames along the columns (`axis=1`).
 
-19. Printing the output DataFrame:
+19.  Printing the output DataFrame:
 ```python
 print(Output)
 ```
