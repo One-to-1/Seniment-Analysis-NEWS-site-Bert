@@ -216,7 +216,46 @@ In the given code, `torch.no_grad()` is used because the model is being used for
 
 17.6. `logits = model(**input_sequence).logits`: This line feeds the tokenized sentence into the model and retrieves the logits (raw prediction values) from the output.
 
+In the context of machine learning, "logits" typically refers to the vector of raw (non-normalized) predictions that a classification model generates, which is then passed to a normalization function. If the model is solving a multi-class classification problem, logits typically become an input to the softmax function. The softmax function then generates a vector that represents the probability distributions of a list of potential outcomes.
+
+In your selected code:
+
+```python
+logits = model(**input_sequence).logits
+```
+
+`model` is presumably a pre-trained machine learning model. The `**input_sequence` is unpacking the input sequence dictionary and passing it to the model. The model then returns an object (likely a named tuple or a simple class), from which the `logits` attribute is accessed.
+
+These logits are the raw output predictions from the model for the given `input_sequence`. They can be used to determine the most likely output or to calculate the probability distribution over all possible outputs.
+
 17.7. `scores = {...}`: This block of code computes the softmax of the logits to get probabilities, and maps each probability to its corresponding sentiment label. The softmax function is used to convert the logits into probabilities that sum to 1.
+
+This code snippet is creating a dictionary called `scores` that maps labels to their corresponding probabilities.
+
+Here's a step-by-step breakdown:
+
+1. `logits.numpy().squeeze()`: This line is converting the logits tensor to a numpy array and removing all single-dimensional entries from the shape of an array.
+
+2. `scipy.special.softmax(logits.numpy().squeeze())`: The softmax function is applied to the logits. This function converts the logits into probabilities that sum up to 1. This is often used in multi-class classification problems to represent the model's confidence for each possible output.
+
+3. `model.config.id2label.values()`: This line is getting the label names from the model's configuration.
+
+4. `zip(model.config.id2label.values(), scipy.special.softmax(logits.numpy().squeeze()))`: This line is creating a list of tuples, where each tuple contains a label and its corresponding probability.
+
+5. `k: v for k, v in zip(...)`: This is a dictionary comprehension that is creating a dictionary from the list of tuples. The dictionary's keys are the labels, and the values are the corresponding probabilities.
+
+So, the `scores` dictionary will look something like this:
+
+```python
+{
+    "label1": 0.1,
+    "label2": 0.3,
+    "label3": 0.6,
+    ...
+}
+```
+
+This dictionary represents the model's confidence that the input belongs to each possible label.
 
 17.8. `sentimentFinbert = max(scores, key=scores.get)`: This line determines the sentiment with the highest probability.
 
